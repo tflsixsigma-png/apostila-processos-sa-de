@@ -1,0 +1,2545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Processos na Área de Saúde — eBook Interativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Jost:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════════ */
+:root{
+  --black:   #0A0A0A;
+  --ink:     #111111;
+  --dark:    #181818;
+  --panel:   #1E1E1E;
+  --border:  #2A2A2A;
+  --muted:   #444444;
+  --smoke:   #888888;
+  --silver:  #AAAAAA;
+  --cream:   #F0ECE3;
+  --white:   #FAFAFA;
+  --gold:    #C9A84C;
+  --gold-lt: #E2C97E;
+  --gold-dk: #8B6914;
+  --green:   #1E6B45;
+  --danger:  #B03030;
+  --warn:    #C07820;
+  --blue:    #1A3A5C;
+
+  --serif:  'Playfair Display', Georgia, serif;
+  --sans:   'Jost', system-ui, sans-serif;
+  --mono:   'DM Mono', monospace;
+
+  --sidebar-w: 280px;
+  --radius: 3px;
+  --transition: 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--black);
+  color: var(--silver);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ═══ SCROLLBAR ═══════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--gold-dk); border-radius: 2px; }
+
+/* ═══ SELECTION ═══════════════════════════════ */
+::selection { background: var(--gold); color: var(--black); }
+
+/* ═══════════════════════════════════════════════
+   LANDING HERO
+═══════════════════════════════════════════════ */
+#landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 2rem;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 80% 80%, rgba(30,107,69,0.06) 0%, transparent 50%),
+    linear-gradient(180deg, #0A0A0A 0%, #111111 100%);
+  z-index: 0;
+}
+
+/* Grid de fundo sutil */
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative; z-index: 1;
+  text-align: center;
+  max-width: 820px;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.2);
+  padding: 0.4rem 1.2rem;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(2.6rem, 6vw, 5.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--white);
+  margin-bottom: 1rem;
+  animation: fadeUp 0.8s 0.15s ease both;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--gold);
+  display: block;
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--smoke);
+  max-width: 560px;
+  margin: 0 auto 3rem;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  animation: fadeUp 0.8s 0.45s ease both;
+}
+
+.hero-meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.hero-meta-num {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.hero-meta-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.hero-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  align-self: center;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--gold);
+  color: var(--black);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1rem 2.4rem;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  animation: fadeUp 0.8s 0.6s ease both;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: var(--gold-lt);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(201,168,76,0.25);
+}
+
+.btn-primary svg { width: 16px; height: 16px; }
+
+/* Linha decorativa dourada */
+.hero-line {
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(transparent, var(--gold));
+  animation: lineGrow 1.2s 1s ease both;
+}
+
+/* Módulos preview */
+.modules-preview {
+  display: flex;
+  gap: 1px;
+  margin-top: 3rem;
+  width: 100%;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeUp 0.8s 0.75s ease both;
+}
+
+.module-chip {
+  flex: 1;
+  padding: 0.85rem 0.6rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-top: 2px solid;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--smoke);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.module-chip:nth-child(1) { border-top-color: var(--gold); }
+.module-chip:nth-child(2) { border-top-color: var(--green); }
+.module-chip:nth-child(3) { border-top-color: var(--blue); }
+
+.module-chip:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+.module-chip span { display: block; font-family: var(--mono); font-size: 0.65rem; color: var(--muted); margin-bottom: 0.2rem; }
+
+/* ═══════════════════════════════════════════════
+   EBOOK LAYOUT
+═══════════════════════════════════════════════ */
+#ebook {
+  display: none;
+  min-height: 100vh;
+}
+
+#ebook.active { display: flex; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--ink);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 1.5rem 1.2rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  color: var(--white);
+  line-height: 1.3;
+}
+
+.sidebar-logo em { color: var(--gold); font-style: italic; }
+.sidebar-institution {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* Progress */
+.sidebar-progress {
+  padding: 0.8rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.progress-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 1px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+.progress-pct {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--gold);
+  margin-top: 0.3rem;
+}
+
+/* Nav */
+.sidebar-nav { padding: 1rem 0; flex: 1; }
+
+.nav-module { margin-bottom: 0.5rem; }
+
+.nav-module-title {
+  padding: 0.5rem 1.2rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-module-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 1.2rem 0.5rem 1.8rem;
+  font-size: 0.78rem;
+  color: var(--smoke);
+  cursor: pointer;
+  transition: var(--transition);
+  border-left: 2px solid transparent;
+  position: relative;
+}
+
+.nav-item:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+
+.nav-item.active {
+  color: var(--gold);
+  border-left-color: var(--gold);
+  background: rgba(201,168,76,0.05);
+}
+
+.nav-item-num {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--muted);
+  min-width: 1.4rem;
+}
+
+.nav-item.done .nav-item-num::after { content: '✓'; color: var(--green); }
+
+/* Sidebar footer */
+.sidebar-footer {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid var(--border);
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: var(--transition);
+  background: none;
+  border: none;
+}
+
+.back-btn:hover { color: var(--gold); }
+
+/* MAIN CONTENT */
+.ebook-main {
+  flex: 1;
+  min-height: 100vh;
+  overflow-y: auto;
+  background: var(--dark);
+}
+
+/* Top bar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(24,24,24,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.7rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.topbar-chapter {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.topbar-chapter strong { color: var(--gold); }
+
+.topbar-nav { display: flex; gap: 0.5rem; }
+
+.topbar-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--smoke);
+  padding: 0.35rem 0.8rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex; align-items: center; gap: 0.4rem;
+}
+
+.topbar-btn:hover { border-color: var(--gold); color: var(--gold); }
+.topbar-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════
+   SECTIONS / CHAPTERS
+═══════════════════════════════════════════════ */
+.chapter {
+  display: none;
+  min-height: calc(100vh - 60px);
+  animation: fadeIn 0.4s ease;
+}
+
+.chapter.active { display: block; }
+
+/* ─── CHAPTER HERO ─────────────────────────── */
+.ch-hero {
+  padding: 4rem 3rem 3rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.ch-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.ch1 .ch-hero::before { background: linear-gradient(90deg, var(--gold), transparent); }
+.ch2 .ch-hero::before { background: linear-gradient(90deg, var(--green), transparent); }
+.ch3 .ch-hero::before { background: linear-gradient(90deg, var(--blue), transparent); }
+
+.ch-num {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.ch-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 0.8rem;
+  max-width: 620px;
+}
+
+.ch-subtitle {
+  font-size: 1.05rem;
+  color: var(--smoke);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.ch-hero-accent {
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--serif);
+  font-size: 10rem;
+  font-weight: 900;
+  color: rgba(201,168,76,0.04);
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ─── CHAPTER BODY ─────────────────────────── */
+.ch-body { padding: 3rem; max-width: 920px; }
+
+/* Objective box */
+.obj-box {
+  background: rgba(201,168,76,0.05);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-left: 3px solid var(--gold);
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.obj-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.obj-text {
+  font-size: 0.95rem;
+  color: var(--cream);
+  line-height: 1.7;
+}
+
+/* Section heading */
+.sec-h2 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--white);
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+}
+
+.sec-h2 .sec-num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--gold);
+}
+
+.sec-h3 {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--cream);
+  margin: 1.8rem 0 0.7rem;
+}
+
+p {
+  font-size: 0.95rem;
+  color: var(--silver);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+/* Quote */
+.quote {
+  margin: 2rem 0;
+  padding: 1.4rem 1.8rem;
+  background: var(--panel);
+  border-left: 3px solid var(--gold);
+  position: relative;
+}
+
+.quote::before {
+  content: '"';
+  position: absolute;
+  top: -0.5rem;
+  left: 1.2rem;
+  font-family: var(--serif);
+  font-size: 4rem;
+  color: rgba(201,168,76,0.15);
+  line-height: 1;
+}
+
+.quote p {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--cream);
+  line-height: 1.7;
+}
+
+.quote-src {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--gold);
+  margin-top: 0.6rem;
+}
+
+/* Grid de cards */
+.card-grid {
+  display: grid;
+  gap: 1px;
+  margin: 1.5rem 0;
+}
+
+.card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+.card {
+  background: var(--panel);
+  padding: 1.3rem;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+  position: relative;
+}
+
+.card:hover { border-color: rgba(201,168,76,0.3); background: rgba(201,168,76,0.04); }
+
+.card-num {
+  font-family: var(--mono);
+  font-size: 1.4rem;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.card-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.card-text {
+  font-size: 0.8rem;
+  color: var(--smoke);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Accent top border */
+.card.gold-top { border-top: 2px solid var(--gold); }
+.card.green-top { border-top: 2px solid var(--green); }
+.card.blue-top { border-top: 2px solid var(--blue); }
+.card.red-top { border-top: 2px solid var(--danger); }
+.card.warn-top { border-top: 2px solid var(--warn); }
+
+/* Stat cards */
+.stat-row {
+  display: flex;
+  gap: 1px;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 120px;
+  background: var(--ink);
+  border: 1px solid var(--border);
+  padding: 1.2rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-family: var(--serif);
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--smoke);
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+
+/* Linha de processo */
+.process-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+.proc-step {
+  flex: 1;
+  min-width: 110px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 1rem 0.8rem;
+  text-align: center;
+  position: relative;
+}
+
+.proc-step::after {
+  content: '→';
+  position: absolute;
+  right: -0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold);
+  font-size: 0.9rem;
+  z-index: 1;
+}
+
+.proc-step:last-child::after { display: none; }
+
+.proc-num {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.proc-name {
+  font-size: 0.78rem;
+  color: var(--white);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Tag pill */
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid;
+  margin: 0.2rem;
+}
+
+.tag-gold { color: var(--gold); border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.06); }
+.tag-green { color: #4CAF50; border-color: rgba(76,175,80,0.4); background: rgba(76,175,80,0.06); }
+.tag-blue { color: #64B5F6; border-color: rgba(100,181,246,0.4); background: rgba(100,181,246,0.06); }
+.tag-red { color: #EF9A9A; border-color: rgba(239,154,154,0.4); background: rgba(239,154,154,0.06); }
+
+/* Info box */
+.info-box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.info-icon { font-size: 1.1rem; margin-top: 0.05rem; flex-shrink: 0; }
+
+/* TIMWOODS grid */
+.timwoods {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: 1.5rem 0;
+}
+
+.tw-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 1rem;
+}
+
+.tw-letter {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.tw-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.4rem;
+}
+
+.tw-hosp {
+  font-size: 0.72rem;
+  color: var(--smoke);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tw-lean {
+  font-size: 0.68rem;
+  color: var(--green);
+  margin: 0.4rem 0 0;
+  font-style: italic;
+}
+
+/* Table */
+.ebook-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.83rem;
+}
+
+.ebook-table th {
+  background: var(--ink);
+  color: var(--gold);
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gold-dk);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.ebook-table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--silver);
+  vertical-align: top;
+}
+
+.ebook-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Maturity bar */
+.maturity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 1.5rem 0;
+}
+
+.mat-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mat-label {
+  width: 160px;
+  font-size: 0.78rem;
+  color: var(--smoke);
+  flex-shrink: 0;
+}
+
+.mat-bar-bg {
+  flex: 1;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.mat-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s ease;
+}
+
+.mat-pct {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  width: 32px;
+  text-align: right;
+  color: var(--muted);
+}
+
+/* ═══════════════════════════════════════════════
+   ATIVIDADES INTERATIVAS
+═══════════════════════════════════════════════ */
+.activity {
+  background: var(--ink);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold);
+  padding: 1.8rem;
+  margin: 2.5rem 0;
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.activity-badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  background: var(--gold);
+  color: var(--black);
+  padding: 0.2rem 0.6rem;
+}
+
+.activity-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--white);
+}
+
+.activity-desc {
+  font-size: 0.85rem;
+  color: var(--smoke);
+  margin-bottom: 1.2rem;
+}
+
+/* Quiz */
+.quiz-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--panel);
+  font-size: 0.85rem;
+  color: var(--silver);
+  line-height: 1.5;
+}
+
+.quiz-option:hover { border-color: var(--gold); color: var(--white); }
+.quiz-option.correct { border-color: #4CAF50; background: rgba(76,175,80,0.08); color: #A5D6A7; }
+.quiz-option.wrong { border-color: var(--danger); background: rgba(176,48,48,0.08); color: #EF9A9A; }
+.quiz-option.disabled { cursor: not-allowed; pointer-events: none; }
+
+.quiz-radio {
+  width: 16px; height: 16px;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+
+.quiz-option.correct .quiz-radio { border-color: #4CAF50; background: #4CAF50; }
+.quiz-option.wrong .quiz-radio { border-color: var(--danger); background: var(--danger); }
+
+.quiz-feedback {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-left: 2px solid var(--gold);
+  background: rgba(201,168,76,0.05);
+  font-size: 0.85rem;
+  color: var(--cream);
+  line-height: 1.6;
+}
+
+.quiz-feedback.visible { display: block; animation: fadeIn 0.3s ease; }
+
+/* Checkbox checklist */
+.checklist { list-style: none; margin: 0.5rem 0 1rem; }
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.85rem;
+  color: var(--silver);
+}
+
+.check-item:hover { color: var(--white); }
+
+.check-item.checked { color: var(--smoke); text-decoration: line-through; }
+
+.check-box {
+  width: 18px; height: 18px;
+  border: 1px solid var(--muted);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+  font-size: 0.65rem;
+  color: transparent;
+}
+
+.check-item.checked .check-box {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--black);
+}
+
+/* Diagrama interativo — VSM */
+.vsm-wrapper { overflow-x: auto; margin: 1.5rem 0; }
+
+.vsm {
+  display: flex;
+  align-items: stretch;
+  min-width: 700px;
+  border: 1px solid var(--border);
+}
+
+.vsm-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.vsm-step:last-child { border-right: none; }
+.vsm-step:hover { background: rgba(255,255,255,0.03); }
+.vsm-step.selected { background: rgba(201,168,76,0.06); }
+
+.vsm-top {
+  padding: 0.7rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.vsm-name {
+  font-size: 0.75rem;
+  color: var(--white);
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.vsm-time {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.vsm-time.va { color: #4CAF50; }
+.vsm-time.waste { color: var(--danger); }
+
+.vsm-bottom {
+  padding: 0.5rem 0.6rem;
+  flex: 1;
+  text-align: center;
+}
+
+.vsm-type {
+  display: inline-block;
+  font-size: 0.6rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 1px;
+}
+
+.vsm-type.va { background: rgba(76,175,80,0.15); color: #A5D6A7; }
+.vsm-type.waste { background: rgba(176,48,48,0.15); color: #EF9A9A; }
+
+.vsm-detail {
+  display: none;
+  padding: 1rem;
+  background: var(--ink);
+  border: 1px solid var(--border);
+  border-top: none;
+  font-size: 0.8rem;
+  color: var(--smoke);
+  line-height: 1.6;
+}
+
+.vsm-detail.visible { display: block; animation: fadeIn 0.2s ease; }
+
+/* A3 Canvas */
+.a3-canvas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin: 1rem 0;
+}
+
+.a3-cell {
+  background: var(--dark);
+  padding: 1rem;
+}
+
+.a3-cell.full-width { grid-column: 1 / -1; }
+
+.a3-cell-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+
+.a3-input {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--silver);
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  padding: 0.6rem 0.8rem;
+  resize: vertical;
+  min-height: 70px;
+  transition: var(--transition);
+  line-height: 1.5;
+}
+
+.a3-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.03);
+}
+
+.a3-input::placeholder { color: var(--muted); font-style: italic; }
+
+.a3-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.btn-secondary {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--smoke);
+  padding: 0.5rem 1.2rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+.btn-accent {
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  color: var(--black);
+  padding: 0.5rem 1.4rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-accent:hover { background: var(--gold-lt); }
+
+/* ─── SEFTI Interativo ─────────────────── */
+.sefti-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.sefti-item { background: var(--panel); border: 1px solid var(--border); padding: 1rem; }
+
+.sefti-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sefti-letter {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.sefti-desc { font-size: 0.78rem; color: var(--smoke); margin-bottom: 0.8rem; line-height: 1.5; }
+
+.sefti-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--border);
+  outline: none;
+}
+
+.sefti-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  background: var(--gold);
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.sefti-value {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--gold);
+  margin-top: 0.3rem;
+}
+
+.sefti-total {
+  background: var(--ink);
+  border: 1px solid var(--gold-dk);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.sefti-total-label { font-size: 0.85rem; color: var(--smoke); }
+.sefti-total-score {
+  font-family: var(--serif);
+  font-size: 2rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.sefti-priority { font-size: 0.75rem; font-family: var(--mono); }
+
+/* Chapter nav footer */
+.ch-footer {
+  padding: 3rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ch-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--smoke);
+  padding: 0.7rem 1.4rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.ch-nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+.ch-nav-btn.primary { background: var(--gold); border-color: var(--gold); color: var(--black); font-weight: 600; }
+.ch-nav-btn.primary:hover { background: var(--gold-lt); }
+.ch-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes lineGrow {
+  from { height: 0; }
+  to   { height: 80px; }
+}
+
+/* ═══ RESPONSIVE ═══════════════════════════════ */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .card-grid-2, .card-grid-3, .card-grid-4 { grid-template-columns: 1fr; }
+  .timwoods { grid-template-columns: repeat(2, 1fr); }
+  .sefti-grid { grid-template-columns: 1fr; }
+  .a3-canvas { grid-template-columns: 1fr; }
+  .ch-body { padding: 1.5rem; }
+  .ch-hero { padding: 2rem 1.5rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     LANDING PAGE
+═══════════════════════════════════════════ -->
+<section id="landing">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">MBA em Gestão de Saúde · IBMEC / A.C. Camargo Cancer Center</div>
+
+    <h1 class="hero-title">
+      Gestão de Processos
+      <em>na Área de Saúde</em>
+    </h1>
+
+    <p class="hero-sub">
+      eBook interativo para gestores e líderes clínicos sênior —
+      fundamentos BPM, Lean Healthcare e ferramentas de melhoria contínua.
+    </p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="hero-meta-num">3</span>
+        <span class="hero-meta-label">Módulos</span>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-num">4</span>
+        <span class="hero-meta-label">Atividades</span>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-num">Vol. 29</span>
+        <span class="hero-meta-label">de 35</span>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-meta-item">
+        <span class="hero-meta-num">3.877</span>
+        <span class="hero-meta-label">Procedimentos AMB</span>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="openEbook()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+      Iniciar Leitura
+    </button>
+
+    <div class="modules-preview">
+      <div class="module-chip" onclick="openEbook(0)">
+        <span>MÓDULO 01</span>
+        A Gestão de Processos
+      </div>
+      <div class="module-chip" onclick="openEbook(1)">
+        <span>MÓDULO 02</span>
+        Metodologia e Ciclos BPM
+      </div>
+      <div class="module-chip" onclick="openEbook(2)">
+        <span>MÓDULO 03</span>
+        Gestão de Projetos e Qualidade
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-line"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     EBOOK
+═══════════════════════════════════════════ -->
+<div id="ebook">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Gestão de Processos<br><em>na Área de Saúde</em></div>
+      <div class="sidebar-institution">IBMEC · AC CAMARGO · MBA</div>
+    </div>
+
+    <div class="sidebar-progress">
+      <div class="progress-label">Progresso</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-pct" id="progressPct">0%</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- Módulo 1 -->
+      <div class="nav-module">
+        <div class="nav-module-title">
+          <div class="nav-module-dot" style="background:var(--gold)"></div>
+          Módulo 1
+        </div>
+        <div class="nav-item active" onclick="goToChapter(0)" id="nav-0">
+          <span class="nav-item-num">01</span>
+          A Gestão de Processos
+        </div>
+        <div class="nav-item" onclick="goToChapter(1)" id="nav-1">
+          <span class="nav-item-num">02</span>
+          Componentes e Decisões
+        </div>
+        <div class="nav-item" onclick="goToChapter(2)" id="nav-2">
+          <span class="nav-item-num">03</span>
+          Eficácia, Eficiência e BPM
+        </div>
+      </div>
+      <!-- Módulo 2 -->
+      <div class="nav-module">
+        <div class="nav-module-title">
+          <div class="nav-module-dot" style="background:var(--green)"></div>
+          Módulo 2
+        </div>
+        <div class="nav-item" onclick="goToChapter(3)" id="nav-3">
+          <span class="nav-item-num">04</span>
+          Ciclos BPM e Mapeamento
+        </div>
+        <div class="nav-item" onclick="goToChapter(4)" id="nav-4">
+          <span class="nav-item-num">05</span>
+          Ferramentas e TIMWOODS
+        </div>
+        <div class="nav-item" onclick="goToChapter(5)" id="nav-5">
+          <span class="nav-item-num">06</span>
+          Atividade: VSM ao Vivo
+        </div>
+      </div>
+      <!-- Módulo 3 -->
+      <div class="nav-module">
+        <div class="nav-module-title">
+          <div class="nav-module-dot" style="background:var(--blue)"></div>
+          Módulo 3
+        </div>
+        <div class="nav-item" onclick="goToChapter(6)" id="nav-6">
+          <span class="nav-item-num">07</span>
+          Gestão de Projetos
+        </div>
+        <div class="nav-item" onclick="goToChapter(7)" id="nav-7">
+          <span class="nav-item-num">08</span>
+          Riscos, Qualidade e A3
+        </div>
+        <div class="nav-item" onclick="goToChapter(8)" id="nav-8">
+          <span class="nav-item-num">09</span>
+          Sustentabilidade Lean
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="back-btn" onclick="closeEbook()">
+        ← Voltar à capa
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="ebook-main" id="ebookMain">
+
+    <div class="topbar">
+      <div class="topbar-chapter" id="topbarChapter">
+        <strong>Módulo 1</strong> · A Gestão de Processos
+      </div>
+      <div class="topbar-nav">
+        <button class="topbar-btn" id="btnPrev" onclick="prevChapter()" disabled>← Anterior</button>
+        <button class="topbar-btn" id="btnNext" onclick="nextChapter()">Próximo →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 0 — A Gestão de Processos ════════════════════ -->
+    <div class="chapter ch1 active" id="ch-0">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">01</div>
+        <div class="ch-num">MÓDULO 01 · CAPÍTULO 01</div>
+        <h1 class="ch-title">A Gestão de Processos</h1>
+        <p class="ch-subtitle">O que é um processo, por que o ambiente hospitalar é único — e por que ignorar essa gestão custa vidas e dinheiro.</p>
+      </div>
+
+      <div class="ch-body">
+        <div class="obj-box">
+          <div class="obj-label">OBJETIVO DO CAPÍTULO</div>
+          <div class="obj-text">Reconhecer os componentes, características e a complexidade da gestão de processos em ambientes hospitalares — e compreender como o Lean Healthcare atua como lente aplicada sobre o BPM.</div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">1.1</span> O que é um Processo</h2>
+
+        <div class="quote">
+          <p>Os processos correspondem a um conjunto de recursos e atividades inter-relacionados que recebe insumos, transforma-os, de acordo com uma lógica pré-estabelecida e com agregação de valor, em produtos/serviços para responderem às necessidades dos clientes.</p>
+          <div class="quote-src">GOMES, C. Organização e gestão por processos. São Paulo: Fundap, 2006.</div>
+        </div>
+
+        <p>Três características fundamentais distinguem um processo de uma atividade isolada:</p>
+
+        <div class="card-grid card-grid-3">
+          <div class="card gold-top">
+            <div class="card-num">01</div>
+            <div class="card-title">Delimitação</div>
+            <p class="card-text">Processos têm começo e fim claramente estabelecidos — entradas definidas e saídas mensuráveis para o cliente.</p>
+          </div>
+          <div class="card gold-top">
+            <div class="card-num">02</div>
+            <div class="card-title">Interligação</div>
+            <p class="card-text">O fim de um processo é o evento de início de outro. Alterar um processo isoladamente é, na prática, impossível.</p>
+          </div>
+          <div class="card gold-top">
+            <div class="card-num">03</div>
+            <div class="card-title">Clientes</div>
+            <p class="card-text">Produtos, insumos e fornecedores são bem definidos. O cliente pode ser interno (outra área) ou externo (paciente, operadora).</p>
+          </div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">1.2</span> A Complexidade do Ambiente Hospitalar</h2>
+
+        <div class="stat-row">
+          <div class="stat-card">
+            <span class="stat-value">3.877</span>
+            <span class="stat-label">procedimentos médicos<br>na lista AMB</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">4–9</span>
+            <span class="stat-label">funcionários por leito<br>(Bittar, 1997)</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">30–40%</span>
+            <span class="stat-label">das atividades não<br>agregam valor</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value">12→5</span>
+            <span class="stat-label">dias de internação<br>HC/UFPE com protocolo</span>
+          </div>
+        </div>
+
+        <p>O hospital é um dos ambientes organizacionais mais complexos já concebidos pelo ser humano. Cada uma das suas quatro grandes áreas — <strong style="color:var(--cream)">Infraestrutura, Ambulatório/Emergência, Internação Clínica-Cirúrgica</strong> e <strong style="color:var(--cream)">Diagnóstico e Terapêutica</strong> — possui subculturas próprias, equipes multiprofissionais com conhecimentos estanques e alta resistência estrutural à interoperabilização.</p>
+
+        <div class="info-box">
+          <div class="info-icon">⚡</div>
+          <div>
+            <strong style="color:var(--gold)">Lean Healthcare como lente aplicada:</strong><br>
+            O Lean não substitui o BPM — é a ferramenta que torna o desperdício visível dentro do fluxo de processos. O VSM (Value Stream Map) é o instrumento que conecta os dois mundos.
+          </div>
+        </div>
+
+        <!-- ATIVIDADE 1 — QUIZ -->
+        <div class="activity">
+          <div class="activity-header">
+            <span class="activity-badge">ATIVIDADE 1</span>
+            <span class="activity-title">Quiz de Diagnóstico</span>
+          </div>
+          <p class="activity-desc">Selecione a alternativa correta sobre a definição de processo na área da saúde:</p>
+
+          <div class="quiz-option" onclick="answerQuiz(this, false, 'q1')">
+            <div class="quiz-radio"></div>
+            Processos são atividades isoladas que podem ser alteradas sem impacto nas demais etapas da organização.
+          </div>
+          <div class="quiz-option" onclick="answerQuiz(this, true, 'q1')">
+            <div class="quiz-radio"></div>
+            Um processo recebe insumos e os transforma com lógica pré-estabelecida em produtos com valor para o cliente, estando interligado a outros processos.
+          </div>
+          <div class="quiz-option" onclick="answerQuiz(this, false, 'q1')">
+            <div class="quiz-radio"></div>
+            Gestão de processos é sinônimo de gestão de projetos — ambos possuem natureza temporária e resultado único.
+          </div>
+          <div class="quiz-option" onclick="answerQuiz(this, false, 'q1')">
+            <div class="quiz-radio"></div>
+            O cliente em um processo hospitalar é sempre o paciente externo — nunca áreas internas como farmácia ou CME.
+          </div>
+
+          <div class="quiz-feedback" id="fb-q1"></div>
+        </div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" disabled>← Anterior</button>
+        <button class="ch-nav-btn primary" onclick="nextChapter()">Componentes e Decisões →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 1 — Componentes e Decisões ═══════════════════ -->
+    <div class="chapter ch1" id="ch-1">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">02</div>
+        <div class="ch-num">MÓDULO 01 · CAPÍTULO 02</div>
+        <h1 class="ch-title">Componentes e Decisões do Gestor</h1>
+        <p class="ch-subtitle">Os 7 componentes de um processo e os 3 campos decisórios que todo gestor de saúde precisa dominar — segundo Vaz (2008).</p>
+      </div>
+
+      <div class="ch-body">
+        <h2 class="sec-h2"><span class="sec-num">2.1</span> Os 7 Componentes de um Processo</h2>
+
+        <div class="card-grid card-grid-3" style="margin-bottom:0">
+          <div class="card">
+            <div class="card-num">01</div>
+            <div class="card-title">Entradas</div>
+            <p class="card-text">Insumos necessários — dados do paciente, materiais, solicitações de exame.</p>
+          </div>
+          <div class="card">
+            <div class="card-num">02</div>
+            <div class="card-title">Saídas</div>
+            <p class="card-text">Laudo, prescrição, prontuário atualizado, alta hospitalar — valor entregue.</p>
+          </div>
+          <div class="card">
+            <div class="card-num">03</div>
+            <div class="card-title">Procedimentos</div>
+            <p class="card-text">Operações estruturadas que garantem a transformação dos insumos em produto com valor.</p>
+          </div>
+          <div class="card">
+            <div class="card-num">04</div>
+            <div class="card-title">Critérios de Controle</div>
+            <p class="card-text">Padrões de desempenho que permitem mensurar resultados e controlar o processo.</p>
+          </div>
+          <div class="card">
+            <div class="card-num">05</div>
+            <div class="card-title">Recursos Humanos</div>
+            <p class="card-text">O maior insumo na saúde — ratio de 4 a 9 funcionários/leito (Bittar, 1997).</p>
+          </div>
+          <div class="card">
+            <div class="card-num">06</div>
+            <div class="card-title">Infraestrutura</div>
+            <p class="card-text">Equipamentos, instalações e materiais de consumo — condições básicas para operação.</p>
+          </div>
+        </div>
+        <div class="card" style="border:1px solid var(--border);padding:1.3rem;margin-top:1px;">
+          <div class="card-num">07</div>
+          <div class="card-title">Tecnologia</div>
+          <p class="card-text">Recursos físicos (equipamentos) e lógicos (BPMS) — viabiliza automação e rastreabilidade de conformidade.</p>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">2.2</span> Os 3 Campos Decisórios — Vaz (2008)</h2>
+
+        <p>Segundo Vaz (2008), o gestor de processos na saúde opera em três campos decisórios simultâneos e interdependentes:</p>
+
+        <table class="ebook-table">
+          <thead>
+            <tr><th>Campo</th><th>Decisões Centrais</th><th>Lean Healthcare</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--gold)">Recursos Humanos</strong></td>
+              <td>Composição da equipe, capacitação, remuneração, gestão da rotatividade (burnout)</td>
+              <td>Subutilização do talento é o 8º desperdício TIMWOODS — residente fazendo triagem é custo invisível</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--gold)">Organização do Trabalho</strong></td>
+              <td>Entradas e saídas de cada etapa, ordenamento lógico do fluxo, controle de qualidade</td>
+              <td>VSM é a ferramenta de Organização do Trabalho — torna visível o que está invisível no fluxo</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--gold)">Tecnologia</strong></td>
+              <td>Automação de atividades repetitivas, arquitetura de sistemas integrados, SIG em tempo real</td>
+              <td>Automatização inclui participação de usuários — não apenas execução automática de tarefas</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- ATIVIDADE — CHECKLIST DE AUTODIAGNÓSTICO -->
+        <div class="activity">
+          <div class="activity-header">
+            <span class="activity-badge">ATIVIDADE 2</span>
+            <span class="activity-title">Checklist de Autodiagnóstico Processual</span>
+          </div>
+          <p class="activity-desc">Avalie o estado atual do seu setor — marque os itens que já estão implementados:</p>
+
+          <ul class="checklist" id="checklist1">
+            <li class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              Processos-chave do setor estão documentados e acessíveis à equipe
+            </li>
+            <li class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              Entradas e saídas de cada etapa são conhecidas e acordadas com as áreas adjacentes
+            </li>
+            <li class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              Existem KPIs definidos e monitorados por processo (não apenas por área)
+            </li>
+            <li class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              A equipe foi treinada nos processos documentados — não apenas na tradição oral
+            </li>
+            <li class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              Existem critérios claros de controle de qualidade em pontos críticos do fluxo
+            </li>
+            <li class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              A tecnologia disponível é adequada e integrada ao processo (não paralela a ele)
+            </li>
+            <li class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              Responsabilidades são claras — cada atividade tem um dono definido
+            </li>
+          </ul>
+
+          <div id="checklistResult" style="margin-top:1rem;padding:0.8rem 1rem;background:var(--panel);border:1px solid var(--border);font-size:0.82rem;color:var(--smoke);display:none;"></div>
+        </div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" onclick="prevChapter()">← A Gestão de Processos</button>
+        <button class="ch-nav-btn primary" onclick="nextChapter()">Eficácia, Eficiência e BPM →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 2 — Eficácia, Eficiência e BPM ═══════════════ -->
+    <div class="chapter ch1" id="ch-2">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">03</div>
+        <div class="ch-num">MÓDULO 01 · CAPÍTULO 03</div>
+        <h1 class="ch-title">Eficácia, Eficiência e BPM</h1>
+        <p class="ch-subtitle">A tensão permanente entre fazer a coisa certa e fazer a coisa certa com o mínimo de recursos — e o que o BPM habilita.</p>
+      </div>
+
+      <div class="ch-body">
+        <div class="quote">
+          <p>Em nossa sociedade atual, a qualidade está cada vez mais atrelada ao olhar do observador. O Cliente. Não saber como o cliente enxerga é uma severa miopia organizacional.</p>
+          <div class="quote-src">CAPOTE, G. Medição de Valor de Processos para BPM, 2013, p.92.</div>
+        </div>
+
+        <div class="card-grid card-grid-2">
+          <div class="card green-top">
+            <div class="card-title">EFICÁCIA</div>
+            <p class="card-text" style="margin-top:0.5rem">O gestor controla continuamente a qualidade de insumos e produtos. Mensura resultados em função de metas que assegurem a demanda do cliente. <br><br><em style="color:var(--gold)">Pergunta central: estamos entregando o resultado correto ao paciente?</em></p>
+          </div>
+          <div class="card warn-top">
+            <div class="card-title">EFICIÊNCIA</div>
+            <p class="card-text" style="margin-top:0.5rem">Gestores excluem tarefas que não agregam valor ao cliente. Produzir o mesmo resultado consumindo menos — eliminar controles em duplicidade, trânsito desnecessário de informações. <br><br><em style="color:var(--gold)">Pergunta central: como produzir o mesmo resultado consumindo menos?</em></p>
+          </div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">3.1</span> BPM vs. Gestão Tradicional</h2>
+
+        <table class="ebook-table">
+          <thead>
+            <tr><th>Dimensão</th><th>Gestão Tradicional</th><th>BPM</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Visão</td><td>Vertical / funcional / silos</td><td>Horizontal / sistêmica / orientada ao cliente</td></tr>
+            <tr><td>Mapeamento</td><td>Não inclui os envolvidos</td><td>Todos envolvidos no redesenho</td></tr>
+            <tr><td>Padronização</td><td>Rígida desde a criação</td><td>Iterativa — admite PDCA</td></tr>
+            <tr><td>Decisão</td><td>Hierárquica e intuitiva</td><td>Baseada em dados e KPIs</td></tr>
+            <tr><td>Tecnologia</td><td>Sistemas isolados por área</td><td>BPMS integrado — visão em tempo real</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="sec-h2"><span class="sec-num">3.2</span> As 6 Capacidades do BPMS</h2>
+
+        <div class="card-grid card-grid-3">
+          <div class="card">
+            <div class="card-title">Desenho dos Fluxos</div>
+            <p class="card-text">Modelagem visual em BPMN — notação padronizada internacionalmente para processos.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Workflow Automatizado</div>
+            <p class="card-text">Alertas, escalonamentos e tarefas repetitivas sem intervenção manual.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Regras de Negócio</div>
+            <p class="card-text">Comportamento do sistema frente a condições específicas de cada processo.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">KPIs em Tempo Real</div>
+            <p class="card-text">Indicadores visíveis a gestores e equipe — base para decisão ágil.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Monitoramento</div>
+            <p class="card-text">Acompanhamento de todas as áreas e sistemas simultaneamente.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Gestão Documental (ECM)</div>
+            <p class="card-text">Enterprise Content Management — rastreabilidade e conformidade documental.</p>
+          </div>
+        </div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" onclick="prevChapter()">← Componentes e Decisões</button>
+        <button class="ch-nav-btn primary" onclick="nextChapter()">Ciclos BPM e Mapeamento →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 3 — Ciclos BPM e Mapeamento ═════════════════ -->
+    <div class="chapter ch2" id="ch-3">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">04</div>
+        <div class="ch-num">MÓDULO 02 · CAPÍTULO 04</div>
+        <h1 class="ch-title">Ciclos BPM e Mapeamento</h1>
+        <p class="ch-subtitle">As 9 áreas do BPM CBOK, o ciclo de 6 fases e as 7 macroetapas do mapeamento — do diagnóstico ao redesenho.</p>
+      </div>
+
+      <div class="ch-body">
+        <div class="obj-box">
+          <div class="obj-label">OBJETIVO DO MÓDULO 2</div>
+          <div class="obj-text">Aplicar técnicas, ferramentas e modelos de gestão — incluindo VSM e mapeamento AS-IS/TO-BE — na realidade operacional de serviços de saúde.</div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">4.1</span> O Ciclo de 6 Fases BPM</h2>
+
+        <div class="process-flow">
+          <div class="proc-step"><span class="proc-num">01</span><div class="proc-name">Planejamento</div></div>
+          <div class="proc-step"><span class="proc-num">02</span><div class="proc-name">Análise AS-IS</div></div>
+          <div class="proc-step"><span class="proc-num">03</span><div class="proc-name">Desenho TO-BE</div></div>
+          <div class="proc-step"><span class="proc-num">04</span><div class="proc-name">Implementação</div></div>
+          <div class="proc-step"><span class="proc-num">05</span><div class="proc-name">Monitoramento</div></div>
+          <div class="proc-step"><span class="proc-num">06</span><div class="proc-name">Refinamento</div></div>
+        </div>
+
+        <div class="info-box">
+          <div class="info-icon">🔁</div>
+          <div>A fase 06 (Refinamento) reinicia o ciclo — o mapeamento nunca é um evento único. O escritório de processos mantém esse ciclo ativo como rotina institucional.</div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">4.2</span> As 7 Macroetapas do Mapeamento</h2>
+
+        <div class="card-grid card-grid-3" style="margin-bottom:1px">
+          <div class="card"><div class="card-num">01</div><div class="card-title">Entender o processo</div><p class="card-text">Por que esse processo existe? Qual a sua importância e benefícios para o cliente?</p></div>
+          <div class="card"><div class="card-num">02</div><div class="card-title">Identificar problemas</div><p class="card-text">Localizar gargalos, pontos de ineficiência e onde o processo falha, atrasa ou duplica esforços.</p></div>
+          <div class="card"><div class="card-num">03</div><div class="card-title">Estabelecer fronteiras</div><p class="card-text">Definir onde e quando o processo inicia e finaliza, e sua interligação com outros processos.</p></div>
+          <div class="card"><div class="card-num">04</div><div class="card-title">Sequenciar etapas</div><p class="card-text">Envolvidos descrevem as atividades necessárias e sua sequência — buscando sempre otimização.</p></div>
+          <div class="card"><div class="card-num">05</div><div class="card-title">Desenhar o fluxograma</div><p class="card-text">Oval (início/fim), retângulo (atividade), diamante (decisão), paralelogramo (entrada/saída).</p></div>
+          <div class="card"><div class="card-num">06</div><div class="card-title">Finalizar e validar</div><p class="card-text">Verificar se todos concordam com o fluxo e se há redundâncias — o mapa deve retratar a realidade.</p></div>
+        </div>
+        <div class="card" style="border:1px solid var(--border);padding:1.3rem;margin-top:1px"><div class="card-num">07</div><div class="card-title">Monitorar continuamente</div><p class="card-text">Etapa permanente — identificar necessidades de ajuste e agir prontamente. O mapeamento não é evento único.</p></div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" onclick="prevChapter()">← Eficácia e BPM</button>
+        <button class="ch-nav-btn primary" onclick="nextChapter()">Ferramentas e TIMWOODS →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 4 — Ferramentas e TIMWOODS ══════════════════ -->
+    <div class="chapter ch2" id="ch-4">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">05</div>
+        <div class="ch-num">MÓDULO 02 · CAPÍTULO 05</div>
+        <h1 class="ch-title">Ferramentas e os 8 Desperdícios</h1>
+        <p class="ch-subtitle">PDCA, SEFTI, AS-IS/TO-BE e o TIMWOODS — o vocabulário operacional do gestor de processos na saúde.</p>
+      </div>
+
+      <div class="ch-body">
+        <h2 class="sec-h2"><span class="sec-num">5.1</span> TIMWOODS — Os 8 Desperdícios Hospitalares</h2>
+
+        <div class="timwoods">
+          <div class="tw-card">
+            <div class="tw-letter">T</div>
+            <div class="tw-name">Transporte</div>
+            <p class="tw-hosp">Prontuário físico entre andares, paciente aguardando maqueiro</p>
+            <p class="tw-lean">→ VSM identifica etapas de transporte desnecessário</p>
+          </div>
+          <div class="tw-card">
+            <div class="tw-letter">I</div>
+            <div class="tw-name">Inventário</div>
+            <p class="tw-hosp">Medicamentos vencidos, kits cirúrgicos em excesso ou em falta</p>
+            <p class="tw-lean">→ Mapeamento de estoques integrado à prescrição</p>
+          </div>
+          <div class="tw-card">
+            <div class="tw-letter">M</div>
+            <div class="tw-name">Movimento</div>
+            <p class="tw-hosp">Enfermeiro percorre 6km/plantão buscando material</p>
+            <p class="tw-lean">→ Redesenho do layout hospitalar orientado por fluxo</p>
+          </div>
+          <div class="tw-card">
+            <div class="tw-letter">W</div>
+            <div class="tw-name">Espera</div>
+            <p class="tw-hosp">Paciente 4h no PS, laudo sem alerta, cirurgia atrasada</p>
+            <p class="tw-lean">→ KPI tempo de espera por etapa — visível no BPMS</p>
+          </div>
+          <div class="tw-card">
+            <div class="tw-letter">O</div>
+            <div class="tw-name">Superprodução</div>
+            <p class="tw-hosp">Exames por "precaução" sem indicação clínica definida</p>
+            <p class="tw-lean">→ Protocolo baseado em evidência limita solicitações</p>
+          </div>
+          <div class="tw-card">
+            <div class="tw-letter">O</div>
+            <div class="tw-name">Defeitos</div>
+            <p class="tw-hosp">Prescrição ilegível, erro de medicação, retrabalho clínico</p>
+            <p class="tw-lean">→ CEP detecta processos fora de controle</p>
+          </div>
+          <div class="tw-card">
+            <div class="tw-letter">D</div>
+            <div class="tw-name">Processamento Extra</div>
+            <p class="tw-hosp">Formulários duplicados, dupla digitação, reuniões sem pauta</p>
+            <p class="tw-lean">→ Automação elimina etapas sem valor agregado</p>
+          </div>
+          <div class="tw-card">
+            <div class="tw-letter">S</div>
+            <div class="tw-name">Subutilização</div>
+            <p class="tw-hosp">Residente fazendo triagem; médico fazendo agendamento</p>
+            <p class="tw-lean">→ Matriz RACI define quem faz o quê por processo</p>
+          </div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">5.2</span> Matriz SEFTI — Priorização de Disfunções</h2>
+
+        <!-- ATIVIDADE INTERATIVA — SEFTI -->
+        <div class="activity">
+          <div class="activity-header">
+            <span class="activity-badge">ATIVIDADE 3</span>
+            <span class="activity-title">Calculadora SEFTI</span>
+          </div>
+          <p class="activity-desc">Selecione um problema real do seu setor e avalie-o nos 5 critérios (escala 1–5). O score total indica a prioridade de intervenção.</p>
+
+          <div class="sefti-grid">
+            <div class="sefti-item">
+              <div class="sefti-name"><span class="sefti-letter">S</span> Segurança</div>
+              <div class="sefti-desc">Risco que o problema representa ao paciente, à equipe ou à instituição.</div>
+              <input type="range" class="sefti-slider" min="1" max="5" value="3" oninput="updateSefti()" id="s1">
+              <div class="sefti-value" id="sv1">3 / 5</div>
+            </div>
+            <div class="sefti-item">
+              <div class="sefti-name"><span class="sefti-letter">E</span> Emergência</div>
+              <div class="sefti-desc">Urgência da resolução — em quanto tempo a situação se torna crítica?</div>
+              <input type="range" class="sefti-slider" min="1" max="5" value="3" oninput="updateSefti()" id="s2">
+              <div class="sefti-value" id="sv2">3 / 5</div>
+            </div>
+            <div class="sefti-item">
+              <div class="sefti-name"><span class="sefti-letter">F</span> Facilidade</div>
+              <div class="sefti-desc">Facilidade de execução da solução — recursos, tempo e engajamento.</div>
+              <input type="range" class="sefti-slider" min="1" max="5" value="3" oninput="updateSefti()" id="s3">
+              <div class="sefti-value" id="sv3">3 / 5</div>
+            </div>
+            <div class="sefti-item">
+              <div class="sefti-name"><span class="sefti-letter">T</span> Tendência</div>
+              <div class="sefti-desc">Tendência de agravamento se nenhuma ação for tomada.</div>
+              <input type="range" class="sefti-slider" min="1" max="5" value="3" oninput="updateSefti()" id="s4">
+              <div class="sefti-value" id="sv4">3 / 5</div>
+            </div>
+          </div>
+          <div class="sefti-item" style="margin-top:1rem;grid-column:1/-1">
+            <div class="sefti-name"><span class="sefti-letter">I</span> Investimento</div>
+            <div class="sefti-desc">Nível de investimento financeiro e humano envolvido na solução (1=muito baixo, 5=muito alto).</div>
+            <input type="range" class="sefti-slider" min="1" max="5" value="3" oninput="updateSefti()" id="s5">
+            <div class="sefti-value" id="sv5">3 / 5</div>
+          </div>
+
+          <div class="sefti-total">
+            <div>
+              <div class="sefti-total-label">Score SEFTI Total</div>
+              <div class="sefti-priority" id="seftiPriority" style="color:var(--gold)">Prioridade Média</div>
+            </div>
+            <div class="sefti-total-score" id="seftiScore">15</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" onclick="prevChapter()">← Ciclos BPM</button>
+        <button class="ch-nav-btn primary" onclick="nextChapter()">VSM ao Vivo →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 5 — VSM ao Vivo ════════════════════════════ -->
+    <div class="chapter ch2" id="ch-5">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">06</div>
+        <div class="ch-num">MÓDULO 02 · ATIVIDADE PRINCIPAL</div>
+        <h1 class="ch-title">VSM ao Vivo — O Fluxo do PS</h1>
+        <p class="ch-subtitle">Analise o fluxo de um pronto-socorro. Clique em cada etapa para revelar o diagnóstico Lean e identificar onde está o desperdício.</p>
+      </div>
+
+      <div class="ch-body">
+        <div class="info-box">
+          <div class="info-icon">📊</div>
+          <div><strong style="color:var(--gold)">Tempo total do fluxo: 4h 00min</strong> · Tempo de cuidado efetivo: 40 minutos · <strong style="color:var(--danger)">79% de desperdício</strong></div>
+        </div>
+
+        <p>Clique em cada etapa do fluxo para analisar o que acontece — e qual a contramedida Lean:</p>
+
+        <div class="vsm-wrapper">
+          <div class="vsm">
+            <div class="vsm-step" onclick="toggleVsm(this)">
+              <div class="vsm-top">
+                <div class="vsm-name">Chegada</div>
+                <div class="vsm-time waste">—</div>
+              </div>
+              <div class="vsm-bottom"><span class="vsm-type waste">Espera</span></div>
+            </div>
+            <div class="vsm-step" onclick="toggleVsm(this)">
+              <div class="vsm-top">
+                <div class="vsm-name">Registro</div>
+                <div class="vsm-time waste">22 min</div>
+              </div>
+              <div class="vsm-bottom"><span class="vsm-type waste">Desperdício</span></div>
+            </div>
+            <div class="vsm-step" onclick="toggleVsm(this)">
+              <div class="vsm-top">
+                <div class="vsm-name">Triagem</div>
+                <div class="vsm-time va">8 min</div>
+              </div>
+              <div class="vsm-bottom"><span class="vsm-type va">Agrega valor</span></div>
+            </div>
+            <div class="vsm-step" onclick="toggleVsm(this)">
+              <div class="vsm-top">
+                <div class="vsm-name">Espera Médico</div>
+                <div class="vsm-time waste">32 min</div>
+              </div>
+              <div class="vsm-bottom"><span class="vsm-type waste">Espera (W)</span></div>
+            </div>
+            <div class="vsm-step" onclick="toggleVsm(this)">
+              <div class="vsm-top">
+                <div class="vsm-name">Avaliação Médica</div>
+                <div class="vsm-time va">12 min</div>
+              </div>
+              <div class="vsm-bottom"><span class="vsm-type va">Agrega valor</span></div>
+            </div>
+            <div class="vsm-step" onclick="toggleVsm(this)">
+              <div class="vsm-top">
+                <div class="vsm-name">Exame / Laudo</div>
+                <div class="vsm-time waste">58 min</div>
+              </div>
+              <div class="vsm-bottom"><span class="vsm-type waste">Desperdício</span></div>
+            </div>
+            <div class="vsm-step" onclick="toggleVsm(this)">
+              <div class="vsm-top">
+                <div class="vsm-name">Conduta</div>
+                <div class="vsm-time va">15 min</div>
+              </div>
+              <div class="vsm-bottom"><span class="vsm-type va">Agrega valor</span></div>
+            </div>
+            <div class="vsm-step" onclick="toggleVsm(this)">
+              <div class="vsm-top">
+                <div class="vsm-name">Alta</div>
+                <div class="vsm-time va">5 min</div>
+              </div>
+              <div class="vsm-bottom"><span class="vsm-type va">Agrega valor</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="vsm-detail" id="vsm-detail-0" style="display:none">
+          <strong style="color:var(--gold)">Chegada ao PS</strong> — O paciente entra sem nenhum processo de triagem ativo. Aguarda na recepção sem informação sobre tempo estimado. <br><em style="color:var(--green)">Contramedida Lean:</em> Display de espera por categoria de risco (Manchester) visível na entrada.
+        </div>
+        <div class="vsm-detail" id="vsm-detail-1" style="display:none">
+          <strong style="color:var(--danger)">Registro: 22 min</strong> — Formulário duplicado + dados já existentes no sistema. Digitação manual sem integração com sistema de triagem. <br><em style="color:var(--green)">Contramedida Lean:</em> Tablet na entrada com identificação por CPF e prontuário integrado — elimina 80% do tempo de registro.
+        </div>
+        <div class="vsm-detail" id="vsm-detail-2" style="display:none">
+          <strong style="color:#4CAF50">Triagem: 8 min ✓</strong> — Etapa que agrega valor — classificação de risco Manchester realizada pela enfermagem. <br><em style="color:var(--green)">Manutenção Lean:</em> Padronizar o checklist de triagem e garantir que nenhuma triagem seja interrompida por demanda administrativa.
+        </div>
+        <div class="vsm-detail" id="vsm-detail-3" style="display:none">
+          <strong style="color:var(--danger)">Espera pelo médico: 32 min</strong> — O maior desperdício (W — Waiting). Paciente aguarda sem informação. <br><em style="color:var(--green)">Contramedida Lean:</em> Alerta automático no pager do médico quando triagem é finalizada. Dashboard de fila visível para toda equipe.
+        </div>
+        <div class="vsm-detail" id="vsm-detail-4" style="display:none">
+          <strong style="color:#4CAF50">Avaliação Médica: 12 min ✓</strong> — Agrega valor. Anamnese, exame físico, hipótese diagnóstica. <br><em style="color:var(--green)">Oportunidade Lean:</em> Template de anamnese pré-preenchido pelo técnico durante a espera reduz tempo para 8 min.
+        </div>
+        <div class="vsm-detail" id="vsm-detail-5" style="display:none">
+          <strong style="color:var(--danger)">Exame/Laudo: 58 min</strong> — O maior gargalo do fluxo. Coleta, processamento e retorno do laudo sem sistema de alerta. <br><em style="color:var(--green)">Contramedida Lean:</em> Alerta automático ao médico quando laudo é liberado no sistema — elimina 40 min de espera passiva.
+        </div>
+        <div class="vsm-detail" id="vsm-detail-6" style="display:none">
+          <strong style="color:#4CAF50">Conduta: 15 min ✓</strong> — Agrega valor. Prescrição, orientação, decisão de alta ou internação. <br><em style="color:var(--green)">Padronização Lean:</em> Checklist de alta com critérios objetivos reduz variabilidade e litígios.
+        </div>
+        <div class="vsm-detail" id="vsm-detail-7" style="display:none">
+          <strong style="color:#4CAF50">Alta: 5 min ✓</strong> — Agrega valor. Entrega de receita e orientações. <br><em style="color:var(--green)">Oportunidade Lean:</em> Orientação de alta digitalizada via WhatsApp/app — reduz retrabalho de retorno ao PS.
+        </div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" onclick="prevChapter()">← Ferramentas e TIMWOODS</button>
+        <button class="ch-nav-btn primary" onclick="nextChapter()">Gestão de Projetos →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 6 — Gestão de Projetos ═════════════════════ -->
+    <div class="chapter ch3" id="ch-6">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">07</div>
+        <div class="ch-num">MÓDULO 03 · CAPÍTULO 07</div>
+        <h1 class="ch-title">Gestão de Projetos na Saúde</h1>
+        <p class="ch-subtitle">A distinção fundamental entre projetos e processos — e as 4 fases do PMBOK aplicadas ao contexto hospitalar.</p>
+      </div>
+
+      <div class="ch-body">
+        <div class="obj-box">
+          <div class="obj-label">OBJETIVO DO MÓDULO 3</div>
+          <div class="obj-text">Relacionar gestão de projetos com processos, gerir riscos, comunicar com efetividade e sustentar a melhoria contínua no longo prazo.</div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">7.1</span> Projetos × Processos</h2>
+
+        <table class="ebook-table">
+          <thead>
+            <tr><th>Dimensão</th><th>Projeto</th><th>Processo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Natureza</td><td>Temporário — início e fim definidos</td><td>Permanente — repetitivo e contínuo</td></tr>
+            <tr><td>Resultado</td><td>Único e singular</td><td>Padronizado e replicável</td></tr>
+            <tr><td>Exemplo</td><td>Implantação do protocolo HC/UFPE</td><td>O fluxo do atendimento cirúrgico</td></tr>
+            <tr><td>Relação</td><td colspan="2" style="color:var(--gold)">Projetos bem-sucedidos deixam como herança processos eficientes. Processos fornecem a plataforma sobre a qual projetos se desenvolvem. — Moroni & Hansen (2006)</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="sec-h2"><span class="sec-num">7.2</span> As 4 Fases do PMBOK na Saúde</h2>
+
+        <div class="card-grid card-grid-2">
+          <div class="card gold-top">
+            <div class="card-num">01</div>
+            <div class="card-title">Iniciação</div>
+            <p class="card-text">Apresentação do projeto, definição do escopo, autorizações. Alinhamento com os objetivos estratégicos da instituição — sem isso, o projeto nasce sem apoio.</p>
+          </div>
+          <div class="card gold-top">
+            <div class="card-num">02</div>
+            <div class="card-title">Planejamento</div>
+            <p class="card-text">Refinamento com definição de atividades, alocação de recursos, estimativas de custo e prazos — e o plano de gestão de riscos.</p>
+          </div>
+          <div class="card gold-top">
+            <div class="card-num">03</div>
+            <div class="card-title">Execução e Controle</div>
+            <p class="card-text">Projeto posto em prática com monitoramento de KPIs. O gestor passa 90% do tempo aqui — comunicação é o principal instrumento.</p>
+          </div>
+          <div class="card gold-top">
+            <div class="card-num">04</div>
+            <div class="card-title">Encerramento</div>
+            <p class="card-text">Documentação final, transferência de conhecimento para o responsável pelo processo e avaliação de lições aprendidas.</p>
+          </div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">7.3</span> Gestão de Riscos — As 6 Etapas (TCU, 2018)</h2>
+
+        <div class="quote">
+          <p>Risco é o efeito da incerteza sobre objetivos estabelecidos. É a possibilidade de ocorrência de eventos que afetem a realização dos objetivos, combinada com o impacto dessa ocorrência sobre os resultados pretendidos.</p>
+          <div class="quote-src">BRASIL, TCU. Referencial básico de gestão de riscos. Brasília: TCU, 2018, p.8.</div>
+        </div>
+
+        <div class="process-flow">
+          <div class="proc-step"><span class="proc-num">01</span><div class="proc-name">Identificar</div></div>
+          <div class="proc-step"><span class="proc-num">02</span><div class="proc-name">Analisar</div></div>
+          <div class="proc-step"><span class="proc-num">03</span><div class="proc-name">Priorizar</div></div>
+          <div class="proc-step"><span class="proc-num">04</span><div class="proc-name">Atribuir</div></div>
+          <div class="proc-step"><span class="proc-num">05</span><div class="proc-name">Monitorar</div></div>
+          <div class="proc-step"><span class="proc-num">06</span><div class="proc-name">Reagir</div></div>
+        </div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" onclick="prevChapter()">← VSM ao Vivo</button>
+        <button class="ch-nav-btn primary" onclick="nextChapter()">Riscos, Qualidade e A3 →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 7 — Método A3 ══════════════════════════════ -->
+    <div class="chapter ch3" id="ch-7">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">08</div>
+        <div class="ch-num">MÓDULO 03 · ATIVIDADE PRINCIPAL</div>
+        <h1 class="ch-title">O Método A3 — Seu Canvas</h1>
+        <p class="ch-subtitle">Uma folha. Um problema. Uma solução. Preencha o A3 do seu processo agora — ele será a base para a apresentação de encerramento.</p>
+      </div>
+
+      <div class="ch-body">
+        <div class="info-box">
+          <div class="info-icon">📝</div>
+          <div><strong style="color:var(--gold)">Instrução:</strong> Selecione um problema real do seu setor e preencha cada célula. O A3 é salvo localmente nesta sessão — use o botão "Exportar" para copiar o conteúdo.</div>
+        </div>
+
+        <!-- ATIVIDADE 4 — A3 Canvas -->
+        <div class="activity">
+          <div class="activity-header">
+            <span class="activity-badge">ATIVIDADE 4</span>
+            <span class="activity-title">Canvas A3 — Meu Processo</span>
+          </div>
+
+          <div class="a3-canvas">
+            <div class="a3-cell full-width">
+              <div class="a3-cell-label">TÍTULO DO PROBLEMA</div>
+              <textarea class="a3-input" id="a3-title" rows="1" placeholder="Ex: Cancelamento cirúrgico por falta de setup padronizado no bloco" style="min-height:40px;resize:none"></textarea>
+            </div>
+            <div class="a3-cell">
+              <div class="a3-cell-label">01 · SITUAÇÃO ATUAL (AS-IS)</div>
+              <textarea class="a3-input" id="a3-current" placeholder="Descreva com dados reais: tempo, custo, frequência, impacto no paciente. Quantifique — sem números não há baseline."></textarea>
+            </div>
+            <div class="a3-cell">
+              <div class="a3-cell-label">02 · META MENSURÁVEL (TO-BE)</div>
+              <textarea class="a3-input" id="a3-goal" placeholder="Que resultado específico em qual prazo? Ex: reduzir cancelamento cirúrgico de 14% para 5% em 90 dias."></textarea>
+            </div>
+            <div class="a3-cell">
+              <div class="a3-cell-label">03 · ANÁLISE DE CAUSA RAIZ (5 Porquês)</div>
+              <textarea class="a3-input" id="a3-cause" placeholder="Por quê ocorre o problema? → Por quê? → Por quê? → Por quê? → Por quê? Vá fundo — cada camada revela a causa real."></textarea>
+            </div>
+            <div class="a3-cell">
+              <div class="a3-cell-label">04 · CONTRAMEDIDAS E PLANO (5W2H)</div>
+              <textarea class="a3-input" id="a3-plan" placeholder="O quê / Quem / Quando / Onde / Por quê / Como / Quanto. Cada contramedida endereça uma causa raiz específica."></textarea>
+            </div>
+            <div class="a3-cell full-width">
+              <div class="a3-cell-label">05 · RESULTADOS E LIÇÕES APRENDIDAS</div>
+              <textarea class="a3-input" id="a3-results" placeholder="O que funcionou? O que não funcionou? Como replicar? O A3 é documento vivo — revisado a cada ciclo PDCA." style="min-height:80px"></textarea>
+            </div>
+          </div>
+
+          <div class="a3-actions">
+            <button class="btn-secondary" onclick="clearA3()">Limpar</button>
+            <button class="btn-accent" onclick="exportA3()">Exportar Texto</button>
+          </div>
+          <div id="a3-export-area" style="display:none;margin-top:1rem;padding:1rem;background:var(--panel);border:1px solid var(--border);font-family:var(--mono);font-size:0.75rem;color:var(--silver);white-space:pre-wrap;line-height:1.6"></div>
+        </div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" onclick="prevChapter()">← Gestão de Projetos</button>
+        <button class="ch-nav-btn primary" onclick="nextChapter()">Sustentabilidade Lean →</button>
+      </div>
+    </div>
+
+    <!-- ═══ CAPÍTULO 8 — Sustentabilidade Lean ══════════════════ -->
+    <div class="chapter ch3" id="ch-8">
+      <div class="ch-hero">
+        <div class="ch-hero-accent">09</div>
+        <div class="ch-num">MÓDULO 03 · CAPÍTULO 09</div>
+        <h1 class="ch-title">Sustentabilidade do Lean</h1>
+        <p class="ch-subtitle">Modelo de Maturidade N1→N5, Hoshin Kanri e o que impede que o Kaizen regrida em 60 dias.</p>
+      </div>
+
+      <div class="ch-body">
+        <h2 class="sec-h2"><span class="sec-num">9.1</span> Modelo de Maturidade BPM</h2>
+
+        <div class="maturity" id="maturityBars">
+          <div class="mat-row">
+            <div class="mat-label"><span class="tag tag-red">N1</span> Caótico</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:0%;background:var(--danger)"></div></div>
+            <div class="mat-pct">15%</div>
+          </div>
+          <div class="mat-row">
+            <div class="mat-label"><span class="tag tag-gold">N2</span> Intuitivo</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:0%;background:var(--warn)"></div></div>
+            <div class="mat-pct">30%</div>
+          </div>
+          <div class="mat-row">
+            <div class="mat-label"><span class="tag tag-gold">N3</span> Padronizado</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:0%;background:var(--gold)"></div></div>
+            <div class="mat-pct">50%</div>
+          </div>
+          <div class="mat-row">
+            <div class="mat-label"><span class="tag tag-green">N4</span> Medido</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:0%;background:var(--green)"></div></div>
+            <div class="mat-pct">75%</div>
+          </div>
+          <div class="mat-row">
+            <div class="mat-label"><span class="tag tag-green">N5</span> Otimizado</div>
+            <div class="mat-bar-bg"><div class="mat-bar-fill" style="width:0%;background:#4CAF50"></div></div>
+            <div class="mat-pct">100%</div>
+          </div>
+        </div>
+
+        <div class="card-grid card-grid-3" style="margin-top:1.5rem">
+          <div class="card red-top"><div class="card-title">N1 — Caótico</div><p class="card-text">Sem processos definidos. Cada turno decide por conta própria. Quando a pessoa-chave sai, o processo some.</p></div>
+          <div class="card warn-top"><div class="card-title">N2 — Intuitivo</div><p class="card-text">Processos existem na cabeça de quem os opera. Informal, frágil, não auditável. Maioria dos hospitais brasileiros.</p></div>
+          <div class="card gold-top"><div class="card-title">N3 — Padronizado</div><p class="card-text">BPM implementado. Escritório de processos ativo. Redução de 20–30% em custos operacionais.</p></div>
+          <div class="card green-top"><div class="card-title">N4 — Medido</div><p class="card-text">KPIs e dashboards em tempo real. Decisões baseadas em dados — não intuição.</p></div>
+          <div class="card green-top"><div class="card-title">N5 — Otimizado</div><p class="card-text">Melhoria contínua na cultura. Toda a equipe pratica Kaizen. O processo melhora como sistema vivo.</p></div>
+          <div class="card" style="background:rgba(201,168,76,0.05);border-color:rgba(201,168,76,0.2)"><div class="card-title" style="color:var(--gold)">Sua meta</div><p class="card-text">Em qual nível está seu hospital hoje? Qual é o próximo nível e em que prazo?</p></div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">9.2</span> O Que Sustenta o Lean</h2>
+
+        <div class="card-grid card-grid-2">
+          <div class="card">
+            <div class="card-title">Hoshin Kanri</div>
+            <p class="card-text">Alinhamento vertical entre estratégia institucional e ações de melhoria locais. Cada A3 conectado a um objetivo estratégico — sem conexão, é energia desperdiçada.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Gestão Visual</div>
+            <p class="card-text">Kanban de leitos, quadro A3 da área, dashboard executivo. Informação visível na parede muda comportamento. Informação em PDF — raramente.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Standup Diário 15min</div>
+            <p class="card-text">Em pé, presencialmente ou online. O que funcionou ontem? O que está travado hoje? Substitui reuniões de status de 1 hora.</p>
+          </div>
+          <div class="card">
+            <div class="card-title">Escritório de Processos</div>
+            <p class="card-text">O guardião da melhoria contínua — não área de controle, mas de facilitação. Capacita multiplicadores internos. O BPM cresce de dentro.</p>
+          </div>
+        </div>
+
+        <h2 class="sec-h2"><span class="sec-num">9.3</span> Case HC/UFPE — A Síntese</h2>
+
+        <div class="quote">
+          <p>Como fazer o controle dos custos e, ao mesmo tempo, manter a qualidade no padrão de atendimento? Esse é um dos desafios principais no ambiente hospitalar.</p>
+          <div class="quote-src">Horn, Sharkey e Limmasch (1997 apud LAGIOIA et al., 2008, p.78)</div>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-card"><span class="stat-value" style="color:var(--green)">12→5</span><span class="stat-label">dias de permanência<br>média pós-protocolo</span></div>
+          <div class="stat-card"><span class="stat-value" style="color:var(--green)">−58%</span><span class="stat-label">redução na<br>permanência</span></div>
+          <div class="stat-card"><span class="stat-value" style="color:var(--green)">✓</span><span class="stat-label">queda em todos<br>os custos diretos</span></div>
+          <div class="stat-card"><span class="stat-value" style="color:var(--green)">✓</span><span class="stat-label">melhora em todos<br>os indicadores de QA</span></div>
+        </div>
+
+        <div class="info-box" style="border-left-color:var(--green);margin-top:1.5rem">
+          <div class="info-icon">🏆</div>
+          <div>
+            <strong style="color:var(--gold)">A conclusão do curso:</strong><br>
+            A gestão de processos é fundamental para a criação de uma cultura organizacional sustentável e consistente, com foco em crescimento, excelência e orientação a resultados. O Lean Healthcare é a lente que torna o desperdício visível — o BPM é a estrutura que o elimina de forma duradoura.
+          </div>
+        </div>
+
+      </div>
+      <div class="ch-footer">
+        <button class="ch-nav-btn" onclick="prevChapter()">← Riscos, Qualidade e A3</button>
+        <button class="ch-nav-btn primary" onclick="closeEbook()">← Voltar à Capa</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+let currentChapter = 0;
+const TOTAL = 9;
+
+const chapterTitles = [
+  ['Módulo 1', 'A Gestão de Processos'],
+  ['Módulo 1', 'Componentes e Decisões'],
+  ['Módulo 1', 'Eficácia, Eficiência e BPM'],
+  ['Módulo 2', 'Ciclos BPM e Mapeamento'],
+  ['Módulo 2', 'Ferramentas e TIMWOODS'],
+  ['Módulo 2', 'VSM ao Vivo'],
+  ['Módulo 3', 'Gestão de Projetos'],
+  ['Módulo 3', 'Riscos, Qualidade e A3'],
+  ['Módulo 3', 'Sustentabilidade Lean'],
+];
+
+const completedChapters = new Set();
+
+// ═══════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════
+function openEbook(ch = 0) {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('ebook').classList.add('active');
+  goToChapter(ch);
+}
+
+function closeEbook() {
+  document.getElementById('ebook').classList.remove('active');
+  document.getElementById('landing').style.display = 'flex';
+  window.scrollTo(0, 0);
+}
+
+function goToChapter(idx) {
+  // Hide current
+  document.getElementById(`ch-${currentChapter}`).classList.remove('active');
+  document.getElementById(`nav-${currentChapter}`).classList.remove('active');
+
+  // Mark done
+  completedChapters.add(currentChapter);
+  document.getElementById(`nav-${currentChapter}`).classList.add('done');
+
+  // Show new
+  currentChapter = idx;
+  document.getElementById(`ch-${currentChapter}`).classList.add('active');
+  document.getElementById(`nav-${currentChapter}`).classList.remove('done');
+  document.getElementById(`nav-${currentChapter}`).classList.add('active');
+
+  // Scroll
+  document.getElementById('ebookMain').scrollTo(0, 0);
+
+  // Update topbar
+  const [mod, title] = chapterTitles[idx];
+  document.getElementById('topbarChapter').innerHTML = `<strong>${mod}</strong> · ${title}`;
+
+  // Update nav buttons
+  document.getElementById('btnPrev').disabled = idx === 0;
+  document.getElementById('btnNext').disabled = idx === TOTAL - 1;
+
+  // Update progress
+  updateProgress();
+
+  // Trigger maturity animation if on ch-8
+  if (idx === 8) setTimeout(animateMaturity, 400);
+}
+
+function prevChapter() { if (currentChapter > 0) goToChapter(currentChapter - 1); }
+function nextChapter() { if (currentChapter < TOTAL - 1) goToChapter(currentChapter + 1); }
+
+function updateProgress() {
+  const done = completedChapters.size;
+  const pct = Math.round((done / TOTAL) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = pct + '%';
+}
+
+// ═══════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════
+function answerQuiz(el, isCorrect, qid) {
+  const parent = el.parentElement;
+  const options = parent.querySelectorAll('.quiz-option');
+  const feedback = document.getElementById('fb-' + qid);
+
+  // Already answered
+  if (el.classList.contains('disabled')) return;
+
+  options.forEach(o => o.classList.add('disabled'));
+
+  if (isCorrect) {
+    el.classList.add('correct');
+    feedback.innerHTML = `✅ <strong>Correto!</strong> Um processo é exatamente isso: uma transformação estruturada de insumos em valor para o cliente, com lógica pré-estabelecida e interligado aos demais processos da organização. Esta é a definição de Gomes (2006) — a base de toda gestão por processos.`;
+  } else {
+    el.classList.add('wrong');
+    // Highlight correct
+    options[1].classList.add('correct');
+    feedback.innerHTML = `❌ <strong>Não exatamente.</strong> A definição correta (Gomes, 2006) enfatiza que processos são inter-relacionados — alterar um isoladamente é praticamente impossível. Além disso, os clientes podem ser internos (CME, farmácia) ou externos (paciente, operadora).`;
+  }
+
+  feedback.classList.add('visible');
+}
+
+// ═══════════════════════════════════════════
+//  CHECKLIST
+// ═══════════════════════════════════════════
+function toggleCheck(el) {
+  el.classList.toggle('checked');
+
+  const list = el.closest('ul');
+  const total = list.querySelectorAll('.check-item').length;
+  const checked = list.querySelectorAll('.check-item.checked').length;
+  const result = document.getElementById('checklistResult');
+
+  result.style.display = 'block';
+  const pct = Math.round((checked / total) * 100);
+
+  let msg, color;
+  if (pct <= 30) { msg = `${pct}% — Diagnóstico: Nível 1–2 (Caótico/Intuitivo). Há oportunidade significativa de estruturação processual. Comece pelo mapeamento AS-IS dos processos mais críticos.`; color = 'var(--danger)'; }
+  else if (pct <= 60) { msg = `${pct}% — Diagnóstico: Nível 2–3 (Intuitivo/Padronizado). Boas bases, mas a documentação e os KPIs por processo ainda precisam de atenção.`; color = 'var(--warn)'; }
+  else if (pct <= 85) { msg = `${pct}% — Diagnóstico: Nível 3–4 (Padronizado/Medido). Maturidade relevante. O próximo passo é garantir monitoramento contínuo e cultura de melhoria.`; color = 'var(--gold)'; }
+  else { msg = `${pct}% — Diagnóstico: Nível 4–5 (Medido/Otimizado). Organização com alta maturidade em processos. Foco em Hoshin Kanri e replicação de boas práticas.`; color = '#4CAF50'; }
+
+  result.innerHTML = `<span style="color:${color};font-weight:600">${msg}</span>`;
+}
+
+// ═══════════════════════════════════════════
+//  SEFTI
+// ═══════════════════════════════════════════
+function updateSefti() {
+  let total = 0;
+  for (let i = 1; i <= 5; i++) {
+    const val = document.getElementById(`s${i}`).value;
+    document.getElementById(`sv${i}`).textContent = val + ' / 5';
+    total += parseInt(val);
+  }
+  document.getElementById('seftiScore').textContent = total;
+
+  let priority, color;
+  if (total <= 10) { priority = 'Baixa Prioridade'; color = 'var(--green)'; }
+  else if (total <= 15) { priority = 'Prioridade Média'; color = 'var(--gold)'; }
+  else if (total <= 20) { priority = 'Alta Prioridade'; color = 'var(--warn)'; }
+  else { priority = 'Prioridade Crítica — Ação Imediata'; color = 'var(--danger)'; }
+
+  const el = document.getElementById('seftiPriority');
+  el.textContent = priority;
+  el.style.color = color;
+}
+
+// ═══════════════════════════════════════════
+//  VSM
+// ═══════════════════════════════════════════
+let vsmDetailMap = [];
+
+function toggleVsm(el) {
+  const steps = document.querySelectorAll('.vsm-step');
+  const idx = Array.from(steps).indexOf(el);
+
+  // Close all details first
+  document.querySelectorAll('.vsm-detail').forEach(d => d.style.display = 'none');
+  steps.forEach(s => s.classList.remove('selected'));
+
+  const detail = document.getElementById(`vsm-detail-${idx}`);
+  if (detail) {
+    detail.style.display = 'block';
+    el.classList.add('selected');
+    detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// ═══════════════════════════════════════════
+//  A3
+// ═══════════════════════════════════════════
+function clearA3() {
+  ['a3-title','a3-current','a3-goal','a3-cause','a3-plan','a3-results'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('a3-export-area').style.display = 'none';
+}
+
+function exportA3() {
+  const title    = document.getElementById('a3-title').value || '(sem título)';
+  const current  = document.getElementById('a3-current').value || '(não preenchido)';
+  const goal     = document.getElementById('a3-goal').value || '(não preenchido)';
+  const cause    = document.getElementById('a3-cause').value || '(não preenchido)';
+  const plan     = document.getElementById('a3-plan').value || '(não preenchido)';
+  const results  = document.getElementById('a3-results').value || '(não preenchido)';
+
+  const text = `A3 — GESTÃO DE PROCESSOS NA ÁREA DE SAÚDE
+MBA IBMEC / A.C.Camargo Cancer Center
+${'─'.repeat(50)}
+
+TÍTULO: ${title}
+
+01 · SITUAÇÃO ATUAL (AS-IS)
+${current}
+
+02 · META MENSURÁVEL (TO-BE)
+${goal}
+
+03 · ANÁLISE DE CAUSA RAIZ
+${cause}
+
+04 · CONTRAMEDIDAS E PLANO (5W2H)
+${plan}
+
+05 · RESULTADOS E LIÇÕES APRENDIDAS
+${results}
+
+${'─'.repeat(50)}
+Gerado via eBook Interativo — Vol. 29/35`;
+
+  const area = document.getElementById('a3-export-area');
+  area.textContent = text;
+  area.style.display = 'block';
+
+  // Copy to clipboard
+  navigator.clipboard.writeText(text).catch(() => {});
+}
+
+// ═══════════════════════════════════════════
+//  MATURITY ANIMATION
+// ═══════════════════════════════════════════
+function animateMaturity() {
+  const widths = ['15%', '30%', '50%', '75%', '100%'];
+  const fills = document.querySelectorAll('.mat-bar-fill');
+  fills.forEach((f, i) => {
+    setTimeout(() => {
+      f.style.width = widths[i];
+    }, i * 100);
+  });
+}
+
+// ═══════════════════════════════════════════
+//  KEYBOARD NAV
+// ═══════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (document.getElementById('ebook').classList.contains('active')) {
+    if (e.key === 'ArrowRight') nextChapter();
+    if (e.key === 'ArrowLeft') prevChapter();
+    if (e.key === 'Escape') closeEbook();
+  }
+});
+</script>
+</body>
+</html>
